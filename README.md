@@ -28,6 +28,7 @@ Exported Fields
 
 Methods
 * Add(c rune, v int) - Add a new leaf with the specified values
+* Find(c rune) - Return the StringTreeNode with the specified rune, or nil if not found.
 
 ## Testing
 

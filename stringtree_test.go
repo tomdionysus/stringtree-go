@@ -28,8 +28,16 @@ var _ = Describe("stringtree", func() {
 			root = NewStringTreeNode('t', 2)
 		})
 
-		It("should add a node left if rune value is less", func() {
+		It("should return the new node", func() {
+			a := root.Add('a', 10)
 
+			Expect(a).NotTo(BeNil())
+
+			Expect(a.Char).To(Equal('a'))
+			Expect(a.Value).To(Equal(10))
+		})
+
+		It("should add a node left if rune value is less", func() {
 			root.Add('a', 10)
 
 			Expect(root.Left).NotTo(BeNil())
@@ -37,11 +45,9 @@ var _ = Describe("stringtree", func() {
 
 			Expect(root.Left.Char).To(Equal('a'))
 			Expect(root.Left.Value).To(Equal(10))
-
 		})
 
 		It("should add a node left if rune value is equal", func() {
-
 			root.Add('t', 20)
 
 			Expect(root.Left).NotTo(BeNil())
@@ -49,11 +55,9 @@ var _ = Describe("stringtree", func() {
 
 			Expect(root.Left.Char).To(Equal('t'))
 			Expect(root.Left.Value).To(Equal(20))
-
 		})
 
 		It("should add a node right if rune value is greater", func() {
-
 			root.Add('z', 40)
 
 			Expect(root.Left).To(BeNil())
@@ -61,8 +65,39 @@ var _ = Describe("stringtree", func() {
 
 			Expect(root.Right.Char).To(Equal('z'))
 			Expect(root.Right.Value).To(Equal(40))
-
 		})
 
+	})
+
+	Describe("Find", func() {
+		var (
+			root *StringTreeNode
+			a    *StringTreeNode
+			b    *StringTreeNode
+			z    *StringTreeNode
+		)
+
+		BeforeEach(func() {
+			root = NewStringTreeNode('t', 2)
+
+			a = root.Add('a', 1)
+			b = root.Add('b', 5)
+			z = root.Add('z', 10)
+		})
+
+		It("should find a node if it exists", func() {
+			var node = root.Find('b')
+
+			Expect(node).NotTo(BeNil())
+
+			Expect(node.Char).To(Equal('b'))
+			Expect(node.Value).To(Equal(5))
+		})
+
+		It("should returnnil if it does not exist", func() {
+			var node = root.Find('p')
+
+			Expect(node).To(BeNil())
+		})
 	})
 })
