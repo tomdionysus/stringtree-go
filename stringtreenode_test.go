@@ -69,6 +69,34 @@ var _ = Describe("StringTreeNode", func() {
 
 	})
 
+	Describe("AddNode", func() {
+		var root *StringTreeNode
+
+		BeforeEach(func() {
+			root = NewStringTreeNode('t', 2)
+		})
+
+		It("should add a node left if rune is less", func() {
+			root.AddNode(NewStringTreeNode('a', 10))
+
+			Expect(root.Left).NotTo(BeNil())
+			Expect(root.Right).To(BeNil())
+
+			Expect(root.Left.Char).To(Equal('a'))
+			Expect(root.Left.Value).To(Equal(10))
+		})
+
+		It("should add a node right if rune is greater", func() {
+			root.AddNode(NewStringTreeNode('z', 40))
+
+			Expect(root.Left).To(BeNil())
+			Expect(root.Right).NotTo(BeNil())
+
+			Expect(root.Right.Char).To(Equal('z'))
+			Expect(root.Right.Value).To(Equal(40))
+		})
+	})
+
 	Describe("Find", func() {
 		var (
 			root *StringTreeNode
