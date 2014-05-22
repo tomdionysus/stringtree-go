@@ -51,7 +51,14 @@ var _ = Describe("StringTree", func() {
 			Expect(tree.Root.Down.Down.Value).To(Equal(10))
 		})
 
-		XIt("should not overwrite values on path", func() {
+		It("should overwrite value in existing last node", func() {
+			tree := NewStringTree()
+			tree.Add("ant", 10)
+			tree.Add("ant", 40)
+			Expect(tree.Root.Down.Down.Value).To(Equal(40))
+		})
+
+		It("should not overwrite values on path", func() {
 			tree := NewStringTree()
 			tree.Add("ant", 10)
 			tree.Add("antop", 20)

@@ -2,61 +2,55 @@ package stringtree
 
 type StringTreeNode struct {
 	Char  rune
-	Value int
+	Value interface{}
 	Left  *StringTreeNode
 	Right *StringTreeNode
 	Down  *StringTreeNode
 }
 
-func NewStringTreeNode(c rune, v int) *StringTreeNode {
+func NewStringTreeNode(char rune, value interface{}) *StringTreeNode {
 	node := new(StringTreeNode)
-	node.Char = c
-	node.Value = v
+	node.Char = char
+	node.Value = value
 	node.Left = nil
 	node.Right = nil
 	return node
 }
 
-func (node *StringTreeNode) Add(c rune, v int) *StringTreeNode {
-	var newNode *StringTreeNode
-	if node.Char == c {
-		node.Value = v
+func (node *StringTreeNode) Add(char rune, value interface{}) *StringTreeNode {
+	if node.Char == char {
+		if value != nil {
+			node.Value = value
+		}
 		return node
-	} else if c <= node.Char {
-		if node.Left == nil {
-			node.Left = new(StringTreeNode)
-			node.Left.Char = c
-			node.Left.Value = v
-			newNode = node.Left
-		} else {
-			newNode = node.Left.Add(c, v)
-		}
-	} else {
-		if node.Right == nil {
-			node.Right = new(StringTreeNode)
-			node.Right.Char = c
-			node.Right.Value = v
-			newNode = node.Right
-		} else {
-			newNode = node.Right.Add(c, v)
-		}
 	}
-	return newNode
+
+	var newNode **StringTreeNode
+	if char < node.Char {
+		newNode = &(node.Left)
+	} else {
+		newNode = &(node.Right)
+	}
+	if (*newNode) == nil {
+		*newNode = NewStringTreeNode(char, value)
+		return *newNode
+	}
+	return (*newNode).Add(char, value)
 }
 
-func (node *StringTreeNode) Find(c rune) *StringTreeNode {
-	if c == node.Char {
+func (node *StringTreeNode) Find(char rune) *StringTreeNode {
+	if char == node.Char {
 		return node
 	}
-	if c <= node.Char && node.Left != nil {
-		return node.Left.Find(c)
-	} else if c > node.Char && node.Right != nil {
-		return node.Right.Find(c)
+	if char <= node.Char && node.Left != nil {
+		return node.Left.Find(char)
+	} else if char > node.Char && node.Right != nil {
+		return node.Right.Find(char)
 	}
 	return nil
 }
 
-func (node *StringTreeNode) Iterate(f func(c rune, i int)) {
+func (node *StringTreeNode) Iterate(f func(char rune, i interface{})) {
 	if node.Left != nil {
 		node.Left.Iterate(f)
 	}
@@ -76,17 +70,17 @@ func NewStringTree() *StringTree {
 	return tree
 }
 
-func (tree *StringTree) Add(s string, v int) {
+func (tree *StringTree) Add(s string, value interface{}) {
 	var node, lastNode **StringTreeNode
 	node = &tree.Root
 	for _, char := range s {
 		lastNode = node
 		if *node == nil {
-			*node = NewStringTreeNode(char, 0)
+			*node = NewStringTreeNode(char, nil)
 			node = &(*node).Down
 		} else {
-			node = &((*node).Add(char, 0)).Down
+			node = &((*node).Add(char, nil)).Down
 		}
 	}
-	(*lastNode).Value = v
+	(*lastNode).Value = value
 }
