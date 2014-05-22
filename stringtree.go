@@ -19,7 +19,10 @@ func NewStringTreeNode(c rune, v int) *StringTreeNode {
 
 func (node *StringTreeNode) Add(c rune, v int) *StringTreeNode {
 	var newNode *StringTreeNode
-	if c <= node.Char {
+	if node.Char == c {
+		node.Value = v
+		return node
+	} else if c <= node.Char {
 		if node.Left == nil {
 			node.Left = new(StringTreeNode)
 			node.Left.Char = c
@@ -64,5 +67,26 @@ func (node *StringTreeNode) Iterate(f func(c rune, i int)) {
 }
 
 type StringTree struct {
-	root StringTreeNode
+	Root *StringTreeNode
+}
+
+func NewStringTree() *StringTree {
+	tree := new(StringTree)
+	tree.Root = nil
+	return tree
+}
+
+func (tree *StringTree) Add(s string, v int) {
+	var node, lastNode **StringTreeNode
+	node = &tree.Root
+	for _, char := range s {
+		lastNode = node
+		if *node == nil {
+			*node = NewStringTreeNode(char, 0)
+			node = &(*node).Down
+		} else {
+			node = &((*node).Add(char, 0)).Down
+		}
+	}
+	(*lastNode).Value = v
 }

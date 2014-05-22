@@ -7,97 +7,56 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("stringtree", func() {
+var _ = Describe("StringTree", func() {
 
 	Describe("Factory New", func() {
 
-		It("should construct a node properly", func() {
-			x := NewStringTreeNode('t', 2)
-			Expect(x.Char).To(Equal('t'))
-			Expect(x.Value).To(Equal(2))
-			Expect(x.Left).To(BeNil())
-			Expect(x.Right).To(BeNil())
+		It("should construct a tree properly", func() {
+			x := NewStringTree()
+			Expect(x.Root).To(BeNil())
 		})
 
 	})
 
 	Describe("Add", func() {
-		var root *StringTreeNode
+		It("should form a tree correctly from a string", func() {
+			tree := NewStringTree()
+			tree.Add("ant", 10)
 
-		BeforeEach(func() {
-			root = NewStringTreeNode('t', 2)
+			Expect(tree.Root.Char).To(Equal('a'))
+			Expect(tree.Root.Down.Char).To(Equal('n'))
+			Expect(tree.Root.Down.Down.Char).To(Equal('t'))
 		})
 
-		It("should return the new node", func() {
-			a := root.Add('a', 10)
+		It("should use parts of the existing tree", func() {
+			tree := NewStringTree()
+			tree.Add("ant", 10)
+			tree.Add("ants", 11)
 
-			Expect(a).NotTo(BeNil())
-
-			Expect(a.Char).To(Equal('a'))
-			Expect(a.Value).To(Equal(10))
+			Expect(tree.Root.Char).To(Equal('a'))
+			Expect(tree.Root.Left).To(BeNil())
+			Expect(tree.Root.Right).To(BeNil())
+			Expect(tree.Root.Down.Char).To(Equal('n'))
+			Expect(tree.Root.Down.Left).To(BeNil())
+			Expect(tree.Root.Down.Right).To(BeNil())
+			Expect(tree.Root.Down.Down.Char).To(Equal('t'))
+			Expect(tree.Root.Down.Down.Left).To(BeNil())
+			Expect(tree.Root.Down.Down.Right).To(BeNil())
+			Expect(tree.Root.Down.Down.Down.Char).To(Equal('s'))
 		})
 
-		It("should add a node left if rune value is less", func() {
-			root.Add('a', 10)
-
-			Expect(root.Left).NotTo(BeNil())
-			Expect(root.Right).To(BeNil())
-
-			Expect(root.Left.Char).To(Equal('a'))
-			Expect(root.Left.Value).To(Equal(10))
+		It("should assign value to last node", func() {
+			tree := NewStringTree()
+			tree.Add("ant", 10)
+			Expect(tree.Root.Down.Down.Value).To(Equal(10))
 		})
 
-		It("should add a node left if rune value is equal", func() {
-			root.Add('t', 20)
-
-			Expect(root.Left).NotTo(BeNil())
-			Expect(root.Right).To(BeNil())
-
-			Expect(root.Left.Char).To(Equal('t'))
-			Expect(root.Left.Value).To(Equal(20))
-		})
-
-		It("should add a node right if rune value is greater", func() {
-			root.Add('z', 40)
-
-			Expect(root.Left).To(BeNil())
-			Expect(root.Right).NotTo(BeNil())
-
-			Expect(root.Right.Char).To(Equal('z'))
-			Expect(root.Right.Value).To(Equal(40))
-		})
-
-	})
-
-	Describe("Find", func() {
-		var (
-			root *StringTreeNode
-			a    *StringTreeNode
-			b    *StringTreeNode
-			z    *StringTreeNode
-		)
-
-		BeforeEach(func() {
-			root = NewStringTreeNode('t', 2)
-
-			a = root.Add('a', 1)
-			b = root.Add('b', 5)
-			z = root.Add('z', 10)
-		})
-
-		It("should find a node if it exists", func() {
-			var node = root.Find('b')
-
-			Expect(node).NotTo(BeNil())
-
-			Expect(node.Char).To(Equal('b'))
-			Expect(node.Value).To(Equal(5))
-		})
-
-		It("should returnnil if it does not exist", func() {
-			var node = root.Find('p')
-
-			Expect(node).To(BeNil())
+		XIt("should not overwrite values on path", func() {
+			tree := NewStringTree()
+			tree.Add("ant", 10)
+			tree.Add("antop", 20)
+			Expect(tree.Root.Down.Down.Value).To(Equal(10))
+			Expect(tree.Root.Down.Down.Down.Down.Value).To(Equal(20))
 		})
 	})
 })
