@@ -90,13 +90,29 @@ var _ = Describe("StringTree", func() {
 			tree.Add("zebra", 70)
 		})
 
-		It("should find strings", func() {
+		It("should return values for strings in tree", func() {
 			Expect(tree.Find("whale")).To(Equal(60))
 			Expect(tree.Find("tom")).To(Equal(40))
 			Expect(tree.Find("anteater")).To(Equal(20))
 			Expect(tree.Find("zebra")).To(Equal(70))
 			Expect(tree.Find("aardvark")).To(Equal(10))
 			Expect(tree.Find("tom cully")).To(Equal(50))
+		})
+
+		It("should return nil for strings not tree", func() {
+			Expect(tree.Find("whal")).To(BeNil())
+			Expect(tree.Find("aneater")).To(BeNil())
+			Expect(tree.Find("ebra")).To(BeNil())
+			Expect(tree.Find("tomcully")).To(BeNil())
+			Expect(tree.Find("o")).To(BeNil())
+			Expect(tree.Find("")).To(BeNil())
+		})
+
+		It("should return nil for any string when tree is empty", func() {
+			tree = NewStringTree()
+
+			Expect(tree.Find("whale")).To(BeNil())
+			Expect(tree.Find("")).To(BeNil())
 		})
 	})
 })
