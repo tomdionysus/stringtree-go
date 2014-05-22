@@ -1,7 +1,7 @@
 package stringtree_test
 
 import (
-	. "github.com/tomcully/stringtree"
+	. "github.com/tomcully/stringtree-go"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
