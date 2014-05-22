@@ -39,6 +39,9 @@ func (node *StringTreeNode) Add(char rune, value interface{}) *StringTreeNode {
 }
 
 func (node *StringTreeNode) AddNode(newNode *StringTreeNode) {
+	if newNode == nil {
+		return
+	}
 
 	var nodePtr **StringTreeNode
 	if newNode.Char < node.Char {
@@ -57,12 +60,31 @@ func (node *StringTreeNode) Find(char rune) *StringTreeNode {
 	if char == node.Char {
 		return node
 	}
-	if char <= node.Char && node.Left != nil {
+	if char < node.Char && node.Left != nil {
 		return node.Left.Find(char)
 	} else if char > node.Char && node.Right != nil {
 		return node.Right.Find(char)
 	}
 	return nil
+}
+
+func (node *StringTreeNode) Remove(char rune, parent *StringTreeNode) *StringTreeNode {
+	if char == node.Char {
+		if node.Left != nil {
+			node.Left.AddNode(node.Right)
+			return node.Left
+		}
+		if node.Right != nil {
+			return node.Right
+		}
+		return nil
+	}
+	if char < node.Char {
+		node.Left = node.Left.Remove(char, node)
+	} else {
+		node.Right = node.Right.Remove(char, node)
+	}
+	return node
 }
 
 func (node *StringTreeNode) Iterate(f func(char rune, i interface{})) {

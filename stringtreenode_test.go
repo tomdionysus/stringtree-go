@@ -95,6 +95,15 @@ var _ = Describe("StringTreeNode", func() {
 			Expect(root.Right.Char).To(Equal('z'))
 			Expect(root.Right.Value).To(Equal(40))
 		})
+
+		It("should not modify tree if supplied nil", func() {
+			root.AddNode(nil)
+
+			Expect(root.Left).To(BeNil())
+			Expect(root.Right).To(BeNil())
+			Expect(root.Char).To(Equal('t'))
+			Expect(root.Value).To(Equal(2))
+		})
 	})
 
 	Describe("Find", func() {
@@ -126,6 +135,62 @@ var _ = Describe("StringTreeNode", func() {
 			var node = root.Find('p')
 
 			Expect(node).To(BeNil())
+		})
+	})
+
+	Describe("Remove", func() {
+
+		var (
+			root *StringTreeNode
+			a    *StringTreeNode
+			b    *StringTreeNode
+			z    *StringTreeNode
+		)
+
+		BeforeEach(func() {
+			root = NewStringTreeNode('t', 2)
+
+			a = root.Add('a', 1)
+			b = root.Add('b', 5)
+			z = root.Add('z', 10)
+		})
+
+		It("should remove a value and retain the tree", func() {
+			root = root.Remove('b', nil)
+
+			Expect(root.Char).To(Equal('t'))
+
+			Expect(root.Left).NotTo(BeNil())
+			Expect(root.Left.Char).To(Equal('a'))
+			Expect(root.Left.Left).To(BeNil())
+			Expect(root.Left.Right).To(BeNil())
+
+			Expect(root.Right).NotTo(BeNil())
+			Expect(root.Right.Char).To(Equal('z'))
+			Expect(root.Right.Left).To(BeNil())
+			Expect(root.Right.Right).To(BeNil())
+		})
+
+		It("should remove the root value and reassign root", func() {
+			root = root.Remove('t', nil)
+
+			Expect(root.Char).To(Equal('a'))
+			Expect(root.Left).To(BeNil())
+			Expect(root.Right.Char).To(Equal('b'))
+			Expect(root.Right.Right.Char).To(Equal('z'))
+		})
+
+		It("should remove a leaf value", func() {
+			root = root.Remove('z', nil)
+
+			Expect(root.Left).NotTo(BeNil())
+			Expect(root.Left.Char).To(Equal('a'))
+			Expect(root.Left.Left).To(BeNil())
+
+			Expect(root.Left.Right).NotTo(BeNil())
+			Expect(root.Left.Right.Char).To(Equal('b'))
+
+			Expect(root.Right).To(BeNil())
 		})
 	})
 })
