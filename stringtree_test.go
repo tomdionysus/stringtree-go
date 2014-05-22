@@ -65,5 +65,38 @@ var _ = Describe("StringTree", func() {
 			Expect(tree.Root.Down.Down.Value).To(Equal(10))
 			Expect(tree.Root.Down.Down.Down.Down.Value).To(Equal(20))
 		})
+
+		It("should assign value even if path continues", func() {
+			tree := NewStringTree()
+			tree.Add("antop", 20)
+			tree.Add("ant", 10)
+			Expect(tree.Root.Down.Down.Value).To(Equal(10))
+			Expect(tree.Root.Down.Down.Down.Down.Value).To(Equal(20))
+		})
+	})
+
+	Describe("Find", func() {
+
+		var tree *StringTree
+
+		BeforeEach(func() {
+			tree = NewStringTree()
+			tree.Add("aardvark", 10)
+			tree.Add("anteater", 20)
+			tree.Add("ant", 30)
+			tree.Add("tom", 40)
+			tree.Add("tom cully", 50)
+			tree.Add("whale", 60)
+			tree.Add("zebra", 70)
+		})
+
+		It("should find strings", func() {
+			Expect(tree.Find("whale")).To(Equal(60))
+			Expect(tree.Find("tom")).To(Equal(40))
+			Expect(tree.Find("anteater")).To(Equal(20))
+			Expect(tree.Find("zebra")).To(Equal(70))
+			Expect(tree.Find("aardvark")).To(Equal(10))
+			Expect(tree.Find("tom cully")).To(Equal(50))
+		})
 	})
 })

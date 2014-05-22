@@ -84,3 +84,23 @@ func (tree *StringTree) Add(s string, value interface{}) {
 	}
 	(*lastNode).Value = value
 }
+
+func (tree *StringTree) Find(s string) interface{} {
+	if tree.Root == nil {
+		return nil
+	}
+	var node *StringTreeNode = tree.Root
+	var lastNode *StringTreeNode
+	for _, char := range s {
+		node = node.Find(char)
+		if node == nil {
+			return nil
+		}
+		lastNode = node
+		node = node.Down
+	}
+	if lastNode == nil {
+		return nil
+	}
+	return lastNode.Value
+}
