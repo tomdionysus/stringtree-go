@@ -75,6 +75,48 @@ var _ = Describe("StringTree", func() {
 		})
 	})
 
+	Describe("FindLastNode", func() {
+
+		var tree *StringTree
+
+		BeforeEach(func() {
+			tree = NewStringTree()
+			tree.Add("aardvark", 10)
+			tree.Add("anteater", 20)
+			tree.Add("ant", 30)
+			tree.Add("tom", 40)
+			tree.Add("tom cully", 50)
+			tree.Add("whale", 60)
+			tree.Add("zebra", 70)
+		})
+
+		It("should return last StringTreeNode for strings in tree", func() {
+			Expect(tree.FindLastNode("whale").Char).To(Equal('e'))
+			Expect(tree.FindLastNode("whale").Value).To(Equal(60))
+			Expect(tree.FindLastNode("tom").Value).To(Equal(40))
+			Expect(tree.FindLastNode("anteater").Value).To(Equal(20))
+			Expect(tree.FindLastNode("zebra").Value).To(Equal(70))
+			Expect(tree.FindLastNode("aardvark").Value).To(Equal(10))
+			Expect(tree.FindLastNode("tom cully").Value).To(Equal(50))
+		})
+
+		It("should return lastnode for partial strings not in tree", func() {
+			Expect(tree.FindLastNode("whal").Char).To(Equal('l'))
+			Expect(tree.FindLastNode("aneater").Char).To(Equal('n'))
+			Expect(tree.FindLastNode("ebra")).To(BeNil())
+			Expect(tree.FindLastNode("tomcully").Char).To(Equal('m'))
+			Expect(tree.FindLastNode("o")).To(BeNil())
+			Expect(tree.FindLastNode("")).To(BeNil())
+		})
+
+		XIt("should return nil for any string when tree is empty", func() {
+			tree = NewStringTree()
+
+			Expect(tree.Find("whale")).To(BeNil())
+			Expect(tree.Find("")).To(BeNil())
+		})
+	})
+
 	Describe("Find", func() {
 
 		var tree *StringTree
@@ -99,7 +141,7 @@ var _ = Describe("StringTree", func() {
 			Expect(tree.Find("tom cully")).To(Equal(50))
 		})
 
-		It("should return nil for strings not tree", func() {
+		It("should return nil for strings not in tree", func() {
 			Expect(tree.Find("whal")).To(BeNil())
 			Expect(tree.Find("aneater")).To(BeNil())
 			Expect(tree.Find("ebra")).To(BeNil())
@@ -113,6 +155,71 @@ var _ = Describe("StringTree", func() {
 
 			Expect(tree.Find("whale")).To(BeNil())
 			Expect(tree.Find("")).To(BeNil())
+		})
+	})
+
+	Describe("Remove", func() {
+
+		var tree *StringTree
+
+		BeforeEach(func() {
+			tree = NewStringTree()
+			tree.Add("aardvark", 10)
+			tree.Add("anteater", 20)
+			tree.Add("ant", 30)
+			tree.Add("tom", 40)
+			tree.Add("tom cully", 50)
+			tree.Add("whale", 60)
+			tree.Add("zebra", 70)
+		})
+
+		It("should a remove string", func() {
+			tree.Remove("whale")
+			Expect(tree.Find("whale")).To(BeNil())
+		})
+
+		It("should not break tree when a string is removed", func() {
+			tree.Remove("whale")
+
+			Expect(tree.Find("tom")).To(Equal(40))
+			Expect(tree.Find("anteater")).To(Equal(20))
+			Expect(tree.Find("zebra")).To(Equal(70))
+			Expect(tree.Find("aardvark")).To(Equal(10))
+			Expect(tree.Find("tom cully")).To(Equal(50))
+			Expect(tree.Find("whale")).To(BeNil())
+		})
+
+		It("should prune tree back to last value on remove", func() {
+
+		})
+	})
+
+	Describe("Scan", func() {
+
+		var tree *StringTree
+
+		BeforeEach(func() {
+			tree = NewStringTree()
+			tree.Add("one", 10)
+			tree.Add("two", 20)
+			tree.Add("three", 30)
+			tree.Add("four", 40)
+			tree.Add("five", 50)
+			tree.Add("six", 60)
+			tree.Add("seven", 70)
+			tree.Add("fourteen", 140)
+		})
+
+		It("should find basic strings with correct offsets", func() {
+
+			output := make(chan StringTreeMatch)
+
+			tree.Scan("onetwothree", output)
+
+			// Channel output should be [0,10]
+			// Channel output should be [3,20]
+			// Channel output should be [6,30]
+			// Channel should be closed
 		})
 	})
 })
